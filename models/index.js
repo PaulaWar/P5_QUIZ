@@ -2,6 +2,9 @@ const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize("sqlite:quizzes.sqlite", {logging: false});
 
+const fs = require("fs");
+let quizzes = [];
+
 sequelize.define('quiz', {
 	id: {
 		type: Sequelize.INTEGER,
@@ -31,15 +34,35 @@ sequelize.sync()
 	console.log(error);
 });
 
+const load = () => {
+    fs.readFile(DBFILENAME, (err, data) => {
+        if (err)
+            throw  err;
+
+        if (data) {
+            let json = JSON.parse(data);
+            if (json)
+                quizzes = json;
+        }
+    })
+};
+
+const save = () => {
+    fs.writeFile(DBFILENAME, JSON.stringify(quizzes), err => {
+        if (err)
+            throw err;
+    })
+};
 
 exports.count = () => quizzes.length;
 
 exports.add = (question, answer) => {
 	quizzes.push({
-		id: quizzes.length;
+		id: quizzes.length,
 		question: (question || "").trim(),
 		answer: (answer || "").trim()
 	});
+	save();
 };
 
 exports.update = (id, question, answer) => {
@@ -48,9 +71,11 @@ exports.update = (id, question, answer) => {
 		throw new Error('El valor del parámetro id no es válido');
 	}
 	quizzes.splice(id, 1, {
+		id: id,
 		question: (question || "").trim(),
 		answer: (answer || "").trim()
-	}),
+	});
+	save();
 };
 
 exports.getAll = () => quizzes;
@@ -60,7 +85,7 @@ exports.getByIndex = id => {
 	if(typeof quiz === "undefined") {
 		throw new Error('El valor del parámetro id no es válido');
 	}
-	return quiz;
+    return JSON.parse(JSON.stringify(quizzes[id]));
 };
 
 exports.deleteByIndex = id => {
@@ -69,6 +94,7 @@ exports.deleteByIndex = id => {
 		throw new Error('El valor del parámetro id no es válido');
 	}
 	quizzes.splice(id, 1);
+	save();
 };
 
 module.exports = sequelize;
