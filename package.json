@@ -10,7 +10,7 @@
     "core",
     "node"
   ],
-  "author": "Manuel Cano Rueda",
+  "author": "Paula de Orbe y Peña Arroyo",
   "license": "Unlicense",
   "dependencies": {
     "chalk": "^2.3.2",

@@ -9,7 +9,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/credits', (req, res, next) => {
-	res.render('credits', {title: "P5_QUIZ", name: "Manuel Cano Rueda"});
+	res.render('credits', {title: "P5_QUIZ", name: "Paula de Orbe y Peña Arroyo Gallego"});
 });
 
 router.get('/quizzes', (requ, res, next) => {
